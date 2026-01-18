@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # -----------------------------------------------------------------------------
-# GENERATED FILE: 2026-01-15T23:48:06-06:00 - do not edit directly.
+# GENERATED FILE: 2026-01-18T13:29:21-06:00 - do not edit directly.
 # Source modules: termux-setup/*.sh + manifest.sh
 # Rebuild: (cd termux-setup && bash build_bundle.sh)
 # -----------------------------------------------------------------------------
@@ -501,14 +501,26 @@ normalize_port_5digits() {
 }
 
 ask_port_5digits() {
-  # args: key title
-  local key="$1" title="$2" v="" p=""
+  # args: key title prompt_text
+  local key="$1" title="$2" prompt_text="${3:-"(5 digits PORT)"}" v="" p=""
   while true; do
-    v="$(notify_ask_one "$key" "$title" "(5 digits PORT or IP:PORT)")" || return 1
+    v="$(notify_ask_one "$key" "$title" "$prompt_text")" || return 1
     p="$(normalize_port_5digits "$v")" || continue
     echo "$p"
     return 0
   done
+}
+
+ask_connect_port_5digits() {
+  # args: key title
+  ask_port_5digits "$1" "$2" "(5 digits PORT or IP:PORT)"
+}
+
+ask_pair_port_5digits() {
+  # args: key title
+  # NOTE: We still tolerate pasted "IP:PORT" via normalize_port_5digits(),
+  # but we do NOT advertise it here to reduce confusion/stress.
+  ask_port_5digits "$1" "$2" "(5 digits PORT)"
 }
 
 ask_code_6digits() {
@@ -641,11 +653,13 @@ adb_pair_connect() {
   if [[ "$ONLY_CONNECT" == "1" ]]; then
     adb_warn_connect_only_if_suspicious
     if [[ -n "$CONNECT_PORT" ]]; then
-      CONNECT_PORT="${CONNECT_PORT//[[:space:]]/}"
-      [[ "$CONNECT_PORT" =~ ^[0-9]{5}$ ]] || die "Invalid CONNECT PORT (must be 5 digits): '$CONNECT_PORT'"
+      local raw="$CONNECT_PORT" norm=""
+      norm="$(normalize_port_5digits "$raw" 2>/dev/null)" || \
+        die "Invalid CONNECT PORT (must be 5 digits PORT or IP:PORT): '$raw'"
+      CONNECT_PORT="$norm"
     else
       echo "[*] Asking CONNECT PORT..."
-      CONNECT_PORT="$(ask_port_5digits connect "CONNECT PORT")" || die "Timeout waiting CONNECT PORT."
+      CONNECT_PORT="$(ask_connect_port_5digits connect "CONNECT PORT")" || die "Timeout waiting CONNECT PORT."
     fi
 
     local serial="${HOST}:${CONNECT_PORT}"
@@ -670,16 +684,18 @@ adb_pair_connect() {
   fi
 
   if [[ -n "$CONNECT_PORT" ]]; then
-    CONNECT_PORT="${CONNECT_PORT//[[:space:]]/}"
-    [[ "$CONNECT_PORT" =~ ^[0-9]{5}$ ]] || die "Invalid --connect-port (must be 5 digits): '$CONNECT_PORT'"
+    local raw="$CONNECT_PORT" norm=""
+    norm="$(normalize_port_5digits "$raw" 2>/dev/null)" || \
+      die "Invalid --connect-port (must be 5 digits PORT or IP:PORT): '$raw'"
+    CONNECT_PORT="$norm"
   else
     echo "[*] Asking CONNECT PORT..."
-    CONNECT_PORT="$(ask_port_5digits connect "CONNECT PORT")" || die "Timeout waiting CONNECT PORT."
+    CONNECT_PORT="$(ask_connect_port_5digits connect "CONNECT PORT")" || die "Timeout waiting CONNECT PORT."
   fi
 
   echo "[*] Asking PAIR PORT..."
   local pair_port
-  pair_port="$(ask_port_5digits pair "PAIR PORT")" || die "Timeout waiting PAIR PORT."
+  pair_port="$(ask_pair_port_5digits pair "PAIR PORT")" || die "Timeout waiting PAIR PORT."
 
   echo "[*] Asking PAIR CODE..."
   local code
@@ -728,9 +744,9 @@ adb_any_loopback_device() {
 # - Otherwise, return the first loopback device.
 adb_pick_loopback_serial() {
   if [[ -n "${CONNECT_PORT:-}" ]]; then
-    local p="${CONNECT_PORT//[[:space:]]/}"
-    [[ "$p" =~ ^[0-9]{5}$ ]] || return 1
-    local target="${HOST}:${p}"
+      local raw="$CONNECT_PORT" p=""
+      p="$(normalize_port_5digits "$raw" 2>/dev/null)" || return 1
+      local target="${HOST}:${p}"
     [[ "$(adb_device_state "$target")" == "device" ]] && { echo "$target"; return 0; }
     return 1
   fi
@@ -747,8 +763,10 @@ adb_pair_connect_if_needed() {
 
   # If user provided a connect-port, insist on that exact target serial.
   if [[ -n "${CONNECT_PORT:-}" ]]; then
-    CONNECT_PORT="${CONNECT_PORT//[[:space:]]/}"
-    [[ "$CONNECT_PORT" =~ ^[0-9]{5}$ ]] || die "Invalid --connect-port (must be 5 digits): '$CONNECT_PORT'"
+    local raw="$CONNECT_PORT" norm=""
+    norm="$(normalize_port_5digits "$raw" 2>/dev/null)" || \
+      die "Invalid --connect-port (must be 5 digits PORT or IP:PORT): '$raw'"
+    CONNECT_PORT="$norm"
 
     local target="${HOST}:${CONNECT_PORT}"
 
@@ -1038,11 +1056,11 @@ Usage:
   ./0_termux-setup.sh --with-adb
     -> Termux baseline + IIAB Debian bootstrap + ADB pair/connect if needed (skips if already connected).
 
-  ./0_termux-setup.sh  --adb-only [--connect-port PORT]
+  ./0_termux-setup.sh  --adb-only [--connect-port PORT|IP:PORT]
     -> Only ADB pair/connect if needed (no IIAB Debian; skips if already connected).
        Tip: --connect-port skips the CONNECT PORT prompt (you’ll still be asked for PAIR PORT + PAIR CODE).
 
-  ./0_termux-setup.sh --connect-only [CONNECT_PORT]
+  ./0_termux-setup.sh --connect-only [PORT|IP:PORT]
     -> Connect-only (no pairing). Use this after the device was already paired before.
 
   ./0_termux-setup.sh --ppk-only
@@ -1057,12 +1075,12 @@ Usage:
     -> baseline + IIAB Debian + ADB pair/connect if needed + (Android 12-13 only) apply --ppk + run --check.
 
   Optional:
-    --connect-port 41313    (5 digits) Skip CONNECT PORT prompt used with --adb-only
-    --timeout 180           Seconds to wait per prompt
-    --reset-iiab            Reset (reinstall) IIAB Debian in proot-distro
-    --no-log                Disable logging
-    --log-file /path/file   Write logs to a specific file
-    --debug                 Extra logs
+    --connect-port [IP:PORT|PORT]  Skip CONNECT PORT prompt (ADB modes)
+    --timeout 180                  Seconds to wait per prompt
+    --reset-iiab                   Reset (reinstall) IIAB Debian in proot-distro
+    --no-log                       Disable logging
+    --log-file /path/file          Write logs to a specific file
+    --debug                        Extra logs
 
 Notes:
 - ADB prompts require: `pkg install termux-api` + Termux:API app installed + notification permission.
@@ -1243,16 +1261,19 @@ while [[ $# -gt 0 ]]; do
     --connect-only)
       set_mode "connect-only"
       ONLY_CONNECT=1
-      # Optional positional port (5 digits)
-      if [[ "${2:-}" =~ ^[0-9]{5}$ ]]; then
+      # Optional positional connect spec (accept PORT or IP:PORT)
+      if [[ -n "${2:-}" ]]; then
+        local_norm=""
+        if local_norm="$(normalize_port_5digits "${2:-}" 2>/dev/null)"; then
         [[ -n "${CONNECT_PORT_FROM:-}" && "${CONNECT_PORT_FROM}" != "positional" ]] && \
           die "CONNECT PORT specified twice (positional + --connect-port). Use only one."
-        CONNECT_PORT="$2"
+        CONNECT_PORT="$local_norm"
         CONNECT_PORT_FROM="positional"
         shift 2
-      else
-        shift
+          continue
+        fi
       fi
+      shift
       ;;
     --ppk-only) set_mode "ppk-only"; shift ;;
     --check) set_mode "check"; shift ;;
@@ -1260,7 +1281,8 @@ while [[ $# -gt 0 ]]; do
     --connect-port)
       [[ -n "${CONNECT_PORT_FROM:-}" && "${CONNECT_PORT_FROM}" != "flag" ]] && \
         die "CONNECT PORT specified twice (positional + --connect-port). Use only one."
-      CONNECT_PORT="${2:-}"
+      CONNECT_PORT="$(normalize_port_5digits "${2:-}" 2>/dev/null)" || \
+        die "Invalid --connect-port (must be 5 digits PORT or IP:PORT): '${2:-}'"
       CONNECT_PORT_FROM="flag"
       shift 2
       ;;
@@ -1277,8 +1299,10 @@ done
 
 validate_args() {
   if [[ -n "${CONNECT_PORT:-}" ]]; then
-    CONNECT_PORT="${CONNECT_PORT//[[:space:]]/}"
-    [[ "$CONNECT_PORT" =~ ^[0-9]{5}$ ]] || die "Invalid --connect-port (must be 5 digits): '$CONNECT_PORT'"
+    local raw="$CONNECT_PORT" norm=""
+    norm="$(normalize_port_5digits "$raw" 2>/dev/null)" || \
+      die "Invalid --connect-port (must be 5 digits PORT or IP:PORT): '$raw'"
+    CONNECT_PORT="$norm"
     case "$MODE" in
       adb-only|with-adb|connect-only|ppk-only|check|all) : ;;
       baseline)
