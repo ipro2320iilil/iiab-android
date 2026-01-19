@@ -18,8 +18,8 @@ http://localhost:8085/maps
 
 ## What are the current components of "IIAB on Android"?
 
-- **[termux-setup](https://github.com/iiab/iiab-android/tree/main/termux-setup) (0_termux-setup.sh)** — sets up a Debian-like environment on Android (it's called [PRoot](https://wiki.termux.com/wiki/PRoot))
-- **Wrapper to install IIAB (1_iiab-on-android.sh)** — sets up [`local_vars_android.yml`](https://github.com/iiab/iiab/blob/master/vars/local_vars_android.yml), then launches IIAB's installer
+- **[termux-setup](https://github.com/iiab/iiab-android/tree/main/termux-setup) (iiab-termux)** — sets up a Debian-like environment on Android (it's called [PRoot](https://wiki.termux.com/wiki/PRoot))
+- **Wrapper to install IIAB (iiab-android)** — sets up [`local_vars_android.yml`](https://github.com/iiab/iiab/blob/master/vars/local_vars_android.yml), then launches IIAB's installer
 - **Core IIAB portability layer** — modifications across IIAB and its existing roles, based on [PR #4122](https://github.com/iiab/iiab/pull/4122)
 - **proot-distro service manager (PDSM)** — like systemd, but for `proot_services`
 
