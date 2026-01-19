@@ -348,7 +348,7 @@ while [[ $# -gt 0 ]]; do
     --check) set_mode "check"; shift ;;
     --all) set_mode "all"; shift ;;
     --connect-port)
-      if [[ -n "${CONNECT_PORT_FROM:-}" && "${CONNECT_PORT_FROM}" != "flag" ]];
+      if [[ -n "${CONNECT_PORT_FROM:-}" && "${CONNECT_PORT_FROM}" != "flag" ]]; then
         die "CONNECT PORT specified twice (positional + --connect-port). Use only one."
       fi
       CONNECT_PORT="$(normalize_port_5digits "${2:-}" 2>/dev/null)" || {
