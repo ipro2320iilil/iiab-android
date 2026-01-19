@@ -75,13 +75,13 @@ http://localhost:8085/maps
      iiab-termux --login
      ```
 
-5. Run `iiab-android` command which (a) installs `local_vars_android.yml` to [`/etc/iiab/local_vars.yml`](https://wiki.iiab.io/go/FAQ#What_is_local_vars.yml_and_how_do_I_customize_it?) and (b) runs the IIAB installer:
+5. Run `iiab-android` which (a) installs `local_vars_android.yml` to [`/etc/iiab/local_vars.yml`](https://wiki.iiab.io/go/FAQ#What_is_local_vars.yml_and_how_do_I_customize_it?) and then (b) runs the IIAB installer:
 
    ```
    iiab-android
    ```
 
-   If the installer completes successfully, the installation process is finished. And you'll see a text box reading:
+   If the installer completes successfully, you'll see a text box reading:
 
    > INTERNET-IN-A-BOX (IIAB) SOFTWARE INSTALL IS COMPLETE
 
