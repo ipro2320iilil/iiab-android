@@ -72,7 +72,7 @@ http://localhost:8085/maps
    * Once complete, enter [PRoot Distro](https://wiki.termux.com/wiki/PRoot)'s IIAB Debian environment to continue the installation:
 
      ```
-     iiab-termux --login iiab
+     iiab-termux --login
      ```
 
 5. Run `iiab-android` command which (a) installs `local_vars_android.yml` to [`/etc/iiab/local_vars.yml`](https://wiki.iiab.io/go/FAQ#What_is_local_vars.yml_and_how_do_I_customize_it?) and (b) runs the IIAB installer:
