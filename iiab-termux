@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # -----------------------------------------------------------------------------
-# GENERATED FILE: 2026-01-19T14:28:21-06:00 - do not edit directly.
+# GENERATED FILE: 2026-01-19T14:50:04-06:00 - do not edit directly.
 # Source modules: termux-setup/*.sh + manifest.sh
 # Rebuild: (cd termux-setup && bash build_bundle.sh)
 # -----------------------------------------------------------------------------
@@ -1392,7 +1392,7 @@ while [[ $# -gt 0 ]]; do
     --check) set_mode "check"; shift ;;
     --all) set_mode "all"; shift ;;
     --connect-port)
-      if [[ -n "${CONNECT_PORT_FROM:-}" && "${CONNECT_PORT_FROM}" != "flag" ]];
+      if [[ -n "${CONNECT_PORT_FROM:-}" && "${CONNECT_PORT_FROM}" != "flag" ]]; then
         die "CONNECT PORT specified twice (positional + --connect-port). Use only one."
       fi
       CONNECT_PORT="$(normalize_port_5digits "${2:-}" 2>/dev/null)" || {
@@ -1640,7 +1640,7 @@ main() {
       if [[ "${ANDROID_SDK:-}" =~ ^[0-9]+$ ]] && (( ANDROID_SDK >= 34 )); then
         all_a14plus_optional_adb
       else
-        adb_pair_connect
+        adb_pair_connect_if_needed
         attempt_auto_apply_ppk
         check_readiness || true
       fi
