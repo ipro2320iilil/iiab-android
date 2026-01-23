@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # -----------------------------------------------------------------------------
-# GENERATED FILE: 2026-01-23T10:42:21-06:00 - do not edit directly.
+# GENERATED FILE: 2026-01-23T14:47:50-06:00 - do not edit directly.
 # Source modules: termux-setup/*.sh + manifest.sh
 # Rebuild: (cd termux-setup && bash build_bundle.sh)
 # -----------------------------------------------------------------------------
@@ -236,21 +236,28 @@ android_open_battery_optimization_list() {
 
 power_mode_battery_instructions() {
   {
-    # Use color to show block text.
-    printf "%b" "${BLU}"
+    # Print header in blue + bold
+    printf '%b' "${YEL}${BOLD}"
     cat <<'EOF'
-[iiab] Power-mode needs one manual Android setting (once):
+[iiab] Power-mode needs one manual Android setting:
+EOF
+
+    # Print body in blue
+    printf '%b' "${BLU}"
+    cat <<'EOF'
   Settings -> Apps -> Termux -> Battery
-    - Set: Unrestricted   (or: Don't optimize / No restrictions)
+    - Set: Unrestricted
+      - or: Don't optimize / No restrictions
     - Allow background activity = ON (if present)
 
-If you can't find Battery under App info, use Android's Battery optimization list
-and set Termux to "Don't optimize".
+  If you can't find Battery under App info, use Android's Battery optimization list and set Termux to "Don't optimize".
 
-Note: Power-mode (wakelock + notification) helps keep the session alive,
-but it cannot override Android's battery restrictions.
+> Note: Power-mode (wakelock + notification) helps keep the session alive, but it cannot override Android's battery restrictions.
+
 EOF
-    printf "%b" "${RST}"
+
+    # Reset colors
+    printf '%b' "${RST}"
   } >&3
 }
 
@@ -263,7 +270,7 @@ power_mode_offer_battery_settings_once() {
 
   power_mode_battery_instructions
 
-  if tty_yesno_default_y "[iiab] Open Termux App info now to adjust Battery policy? [Y/n]: "; then
+  if tty_yesno_default_y "${YEL}[iiab] Open Termux App info to adjust Battery policy?${RST} [Y/n]: "; then
     if android_open_termux_app_info; then
       printf "[iiab] When done, return to Termux and press Enter to continue... " >&3
       if [[ -r /dev/tty ]]; then
@@ -693,7 +700,7 @@ power_mode_login_enter() {
   fi
 
   local title="Internet-in-a-Box on Android"
-  local content="IIAB session active (proot). To keep the session running with the screen off, don't forget to set unrestricted battery usage."
+  local content="IIAB session active (proot). For screen-off running, please set battery usage to Unrestricted"
 
   if termux-notification \
       --id "$LOGIN_NOTIF_ID" \
@@ -1622,12 +1629,19 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+tty_prompt_print() {
+  local prompt="$1" outfd=1
+  # Prefer original console FD3 if available (set by setup_logging)
+  if { : >&3; } 2>/dev/null; then outfd=3; fi
+  printf '%b' "$prompt" >&"$outfd"
+}
+
 tty_yesno_default_y() {
   # args: prompt
   # Returns 0 for Yes, 1 for No. Default is Yes.
   local prompt="$1" ans="Y"
   if [[ -r /dev/tty ]]; then
-    printf "%s" "$prompt"
+    tty_prompt_print "$prompt"
     if ! read -r ans < /dev/tty; then
       ans="Y"
     fi
@@ -1645,7 +1659,7 @@ tty_yesno_default_n() {
   # Returns 0 for Yes, 1 for No. Default is No.
   local prompt="$1" ans="N"
   if [[ -r /dev/tty ]]; then
-    printf "%s" "$prompt"
+    tty_prompt_print "$prompt"
     read -r ans < /dev/tty || ans="N"
   else
     warn "No /dev/tty available; defaulting to NO."

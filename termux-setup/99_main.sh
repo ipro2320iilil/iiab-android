@@ -396,12 +396,19 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+tty_prompt_print() {
+  local prompt="$1" outfd=1
+  # Prefer original console FD3 if available (set by setup_logging)
+  if { : >&3; } 2>/dev/null; then outfd=3; fi
+  printf '%b' "$prompt" >&"$outfd"
+}
+
 tty_yesno_default_y() {
   # args: prompt
   # Returns 0 for Yes, 1 for No. Default is Yes.
   local prompt="$1" ans="Y"
   if [[ -r /dev/tty ]]; then
-    printf "%s" "$prompt"
+    tty_prompt_print "$prompt"
     if ! read -r ans < /dev/tty; then
       ans="Y"
     fi
@@ -419,7 +426,7 @@ tty_yesno_default_n() {
   # Returns 0 for Yes, 1 for No. Default is No.
   local prompt="$1" ans="N"
   if [[ -r /dev/tty ]]; then
-    printf "%s" "$prompt"
+    tty_prompt_print "$prompt"
     read -r ans < /dev/tty || ans="N"
   else
     warn "No /dev/tty available; defaulting to NO."

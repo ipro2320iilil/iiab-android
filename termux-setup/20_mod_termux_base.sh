@@ -92,21 +92,28 @@ android_open_battery_optimization_list() {
 
 power_mode_battery_instructions() {
   {
-    # Use color to show block text.
-    printf "%b" "${BLU}"
+    # Print header in blue + bold
+    printf '%b' "${YEL}${BOLD}"
     cat <<'EOF'
 [iiab] Power-mode needs one manual Android setting:
+EOF
+
+    # Print body in blue
+    printf '%b' "${BLU}"
+    cat <<'EOF'
   Settings -> Apps -> Termux -> Battery
-    - Set: Unrestricted (or: Don't optimize / No restrictions)
+    - Set: Unrestricted
+      - or: Don't optimize / No restrictions
     - Allow background activity = ON (if present)
 
-If you can't find Battery under App info, use Android's Battery optimization list
-and set Termux to "Don't optimize".
+  If you can't find Battery under App info, use Android's Battery optimization list and set Termux to "Don't optimize".
 
-Note: Power-mode (wakelock + notification) helps keep the session alive,
-but it cannot override Android's battery restrictions.
+> Note: Power-mode (wakelock + notification) helps keep the session alive, but it cannot override Android's battery restrictions.
+
 EOF
-    printf "%b" "${RST}"
+
+    # Reset colors
+    printf '%b' "${RST}"
   } >&3
 }
 
@@ -119,7 +126,7 @@ power_mode_offer_battery_settings_once() {
 
   power_mode_battery_instructions
 
-  if tty_yesno_default_y "[iiab] Open Termux App info now to adjust Battery policy? [Y/n]: "; then
+  if tty_yesno_default_y "${YEL}[iiab] Open Termux App info to adjust Battery policy?${RST} [Y/n]: "; then
     if android_open_termux_app_info; then
       printf "[iiab] When done, return to Termux and press Enter to continue... " >&3
       if [[ -r /dev/tty ]]; then
