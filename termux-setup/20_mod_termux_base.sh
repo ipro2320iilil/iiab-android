@@ -70,6 +70,8 @@ step_termux_repo_select_once() {
     return 0
   fi
 
+  local did_run=0
+
   if [[ -r /dev/tty ]]; then
     printf "\n${YEL}[iiab] One-time setup:${RST} Select a nearby Termux repository mirror for faster downloads.\n"
     local ans="Y"
@@ -81,12 +83,18 @@ step_termux_repo_select_once() {
     ans="${ans:-Y}"
     if [[ "$ans" =~ ^[Yy]$ ]]; then
       # Run interactive UI against /dev/tty and original console fds (3/4).
-      termux-change-repo </dev/tty >&3 2>&4 || true
+      if termux-change-repo </dev/tty >&3 2>&4; then
+        did_run=1
+      fi
       ok "Mirror selection completed (or skipped inside the UI)."
     else
       warn "Mirror selection skipped by user."
     fi
-    date > "$stamp"
+    if (( did_run )); then
+      date > "$stamp"
+    else
+      warn "Mirror not selected yet; you'll be asked again next run."
+    fi
     return 0
   fi
 
@@ -129,15 +137,17 @@ step_termux_base() {
   fi
 
   if ! termux_apt install \
-    ca-certificates \
-    curl \
-    coreutils \
-    grep \
-    sed \
-    gawk \
-    openssh \
-    proot proot-distro \
     android-tools \
+    ca-certificates \
+    coreutils \
+    curl \
+    gawk \
+    grep \
+    iputils-ping \
+    openssh \
+    proot \
+    proot-distro \
+    sed \
     termux-api
   then
     BASELINE_ERR="termux_apt install (baseline deps)"
