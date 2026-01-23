@@ -109,6 +109,7 @@ apt-get install -y ca-certificates \
                    coreutils \
                    curl \
                    e2fsprogs \
+                   iputils-ping \
                    netcat-traditional \
                    sudo
 
