@@ -1,4 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
+# Copied from: https://github.com/iiab/iiab-android/blob/main/termux.txt
+
 set -euo pipefail
 
 # iiab Termux chained bootstrap launcher
