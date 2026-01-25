@@ -180,7 +180,7 @@ Before you begin, obtain your Android phone or tablet’s IP address by running 
 
 To log in to IIAB on Android from your computer, follow these SSH command-line interface (CLI) instructions:
 
-1. On your Android phone or tablet, find your way to Termux's CLI. **If you earlier ran `proot-distro login iiab` to get to PRoot Distro's low-level IIAB Debian CLI — you MUST step back up to Termux's high-level CLI — e.g. by running:**
+1. On your Android phone or tablet, find your way to Termux's CLI. **If you earlier ran `iiab-termux --login` to get to PRoot Distro's low-level IIAB Debian CLI — you MUST step back up to Termux's high-level CLI — e.g. by running:**
 
    ```
    exit
@@ -219,7 +219,7 @@ To log in to IIAB on Android from your computer, follow these SSH command-line i
 Once you have an SSH session on your remote device, log into PRoot Distro to access and run the IIAB applications, just as during installation:
 
 ```
-proot-distro login iiab
+iiab-termux --login
 ```
 
 You will then be in a IIAB Debian shell with access to the IIAB CLI (command-line interface) tools.
