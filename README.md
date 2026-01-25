@@ -58,11 +58,22 @@ http://localhost:8085/maps
    curl iiab.io/termux.txt | bash
    ```
    * In Android 12 and 13, make sure to opt in to the ADB Pair/Connect steps when prompted. You will be asked for 3 values: **Connect Port**, **Pair Port**, and **Pair Code**. Please check this (WIP) [video tutorial](https://ark.switnet.org/vid/termux_adb_pair_a16_hb.mp4) for a more interactive explanation. Once connected to ADB the `iiab-termux` script will handle the PPK workaround setup.
-   
+
    * On Android 14 and later: Disable this restriction using Android Settings, in **Developer Options**:
 
         * `Disable child process restrictions` (English), or
         * `Desactivar restricciones de procesos secundarios` (Spanish)
+
+   * **Battery usage**:To run the IIAB on Android installer, or keep IIAB services running in the background (screen off), you must allow Termux to run without battery restrictions. Depending on your device and Android version, this setting may appear as one of the following:
+
+     * Unrestricted
+     * Not optimized / Don't optimize
+     * Allow background activity/usage
+
+      The exact label varies by vendor and Android version. Make sure this is enabled for unattended, screen-off installs; otherwise Android may doze, pause, or even kill the process when screen turns off.
+
+      Leaving this enabled is the most reliable way to keep the app and services running and ready. Please note that battery drain will increase, so it's best to keep a charger nearby.
+
 
 4. Enter [PRoot Distro](https://wiki.termux.com/wiki/PRoot)'s IIAB Debian environment to continue the installation:
 
@@ -114,7 +125,7 @@ A copy of Wikipedia (in almost any language) can now be put on your Android phon
 3. Open Android's Termux app, and then run:
 
    ```
-   iiab-termux --login iiab
+   iiab-termux --login
    ```
 
    EXPLANATION: Starting from Termux's high-level CLI (Command-Line Interface), you've "shelled into" [PRoot Distro](https://wiki.termux.com/wiki/PRoot)'s low-level IIAB Debian CLI:
@@ -128,7 +139,7 @@ A copy of Wikipedia (in almost any language) can now be put on your Android phon
                           v
          +----------------+---------------+
          |      Termux (Android CLI)      |
-         | $ proot-distro login iiab      |
+         | $ iiab-termux --login          |
          +----------------+---------------+
                           |
          "shell into" the | low-level environment
